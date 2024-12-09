@@ -5,7 +5,6 @@ from scipy.stats import linregress
 def draw_plot():
     # Read data from file
     df = pd.read_csv('epa-sea-level.csv')
-    print(df)
 
     # Create scatter plot
     plt.scatter(
@@ -14,16 +13,23 @@ def draw_plot():
         )
 
     # Create first line of best fit
-    linear_regress = linregress(
+    first_regression = linregress(
         x=df['Year'],
         y=df['CSIRO Adjusted Sea Level']
     )
-    predicted_years = list(range(2013, 2051))
-    predicted_values = [linear_regress.slope * year + linear_regress.intercept for year in predicted_years]
-    plt.plot(predicted_years, predicted_values, color='red', label='Predicted Line')
+    predicted_years = list(range(df['Year'].iloc[0], 2051))
+    predicted_values = [first_regression.slope * year + first_regression.intercept for year in predicted_years]
+    plt.plot(predicted_years, predicted_values, color='blue', label='Predicted Line')
 
     # Create second line of best fit
-    # second_line = liregress()
+    filter_by_year = df['Year'] >= 2000
+    second_regression = linregress(
+        x=df[filter_by_year]['Year'],
+        y=df[filter_by_year]['CSIRO Adjusted Sea Level']
+    )
+    predicted_years = list(range(2000, 2051))
+    predicted_values = [second_regression.slope * year + second_regression.intercept for year in predicted_years]
+    plt.plot(predicted_years, predicted_values, color='red', label='Predicted Line')
 
     # Add labels and title
     plt.xlabel('Year')
